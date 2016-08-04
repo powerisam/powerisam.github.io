@@ -1,0 +1,716 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.3"/>
+
+
+
+
+  <meta name="keywords" content="并发编程," />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    analytics: {
+      google: ''
+    },
+    sidebar: 'post'
+  };
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?0ba53c318f66746126870317c42beb38";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <title> java并发编程——并发容器和并发工具介绍 // Isam Notes </title>
+</head>
+
+<body>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <div id="header" class="header">
+      <div class="header-inner">
+        <h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand">
+      <span class="logo">
+        <i class="icon-logo"></i>
+      </span>
+      <span class="site-title">Isam Notes</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<div class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/">
+            <i class="menu-item-icon icon-home"></i> <br />
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            <i class="menu-item-icon icon-about"></i> <br />
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            <i class="menu-item-icon icon-archives"></i> <br />
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            <i class="menu-item-icon icon-tags"></i> <br />
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+<form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'Xn7i9_HxVJxQe5yqz-NP','2.0.0');
+</script>
+
+<div class="site-search-toggle"></div>
+    </div>
+  
+</div>
+
+
+      </div>
+    </div>
+
+    <div id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              java并发编程——并发容器和并发工具介绍
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015-07-08
+        </span>
+
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/07/08/java-concurrency-program-1/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/07/08/java-concurrency-program-1/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <p>java.util.concurrent包下面为我们提供了丰富的类和接口供我们开发出支持高并发、线程安全的程序。下面将从三个方面对这些基础构建类做以介绍和总结。</p>
+<p>同步容器类，介绍Vector，HashTable和Collections.SynchronizedXXX()；</p>
+<p>并发容器类，介绍ConcurrentHashMap，CopyOnWrite容器以及阻塞队列。</p>
+<p>并发工具类，介绍CountLatch，FututeTask，Semaphore和CyclicBarrier。</p>
+<p><strong><span style="font-size:20px">第一部分：同步容器类</span></strong></p>
+<p>同步容器类包括：Vector和HashTable，这两个类是早期JDK的一部分。此外还包括了JDK1.2之后提供的同步封装器方法Collections.synchronizedXxx()。</p>
+<p>#同步容器类的问题</p>
+<p>我们都知道Vector是线程安全的容器，但当我们对Vector经行复合操作时往往会得到意想之外的结果。比如迭代操作：</p>
+<pre><code>for(int i=0;i&lt;vector.size();i++){
+    doSomething(vector.get(i));
+}
+</code></pre><p>例如两个线程A和B，A线程对容器进行迭代操作的时候B线程可能对容器进行了删除操作，这样就会导致A线程的迭代操作抛出IndexOutOfBoundsException。而这显然不是我们想得到的结果，所以，为了解决不可靠迭代的问题，我们只能牺牲伸缩性为容器加锁，代码如下：</p>
+<pre><code>​synchronized(vector){
+    for(int i=0;i&lt;vector.size();i++){
+    doSomething(vector.get(i));
+    }
+}
+</code></pre><p>​<br>加锁防止了迭代期间对容器的修改，但这同时也降低了容器的并发性。当容器很大时，其他线程要一直等待迭代结束，因此性能不高。</p>
+<p>#迭代器与CoucurrentModificationException</p>
+<p>上面的例子我们举了Vector这种“古老”的容器。但是实际上很多“现代”的容器类也并没有避免上面所提到的问题。比如：for-each循环和Iterator。当我们调用Iterator类的hasNext和next方法对容器进行迭代时，若其他线程并发修改该容器，那么此时容器表现出的行为是“及时失败”的，即抛出CoucurrentModificationException。因此，为了避免以上问题，我们又不得不为容器加锁，或者对容器进行“克隆”，在副本上进行操作，但这样做的性能显然是不高的。</p>
+<p>#影藏的迭代器</p>
+<p>这里要特别提到的是有些类的方法会隐藏的调用容器的迭代器，这往往是很容易被我们忽视的。看下面列子：</p>
+<pre><code>private final Set&lt;Integer&gt; set = new HashSet&lt;Integer&gt;();
+
+public synchronized void add(Integer i){set.add(i);}
+
+public void addMore(){
+    for(int i=0;i&lt;10;i++)
+    add(i);
+    System.out.println(&quot;this is set:&quot;+set);
+}
+</code></pre><p>以上代码能看出对容器的迭代操作吗？乍看没有。但实际上最后一段“this is set：”+set的代码影藏的调用了set的toString方法，而toString方法又会影藏的调用容器的迭代方法，这样该类的addMore方法同样可能会抛出CoucurrentModificationException异常。更严重的问题是该类并不是线程安全的，我们可以使用SynchronizedSet来包装set类，对同步代码进行封装，这样就避免了问题。此外我们还需要特别注意：容器的equals、hashCode方法都会隐式的进行迭代操作，当一个容器作为另一个容器的健值或者元素时就会出现这种情况。同样，containsAll，removeAll等方法以及把容器当做参数的构造函数，都会进行迭代操作。所有这些间接迭代的操作都可能导致程序抛出CoucurrentModificationException。</p>
+<p><strong><span style="font-size:20px">第二部分：并发容器类</span></strong></p>
+<p>java.util.concurrent包下面为我们提供了丰富的高并发容器类。通过并发容器来替换同步容器，可以极大地提高伸缩性和降低风险。这些容器按照不同的用途分为以下几类：</p>
+<p>#ConcurrentHashMap</p>
+<p>Java 5.0增加的ConcurrentHashMap几乎是最常用的并发容器了。与·HashTable相比，ConcurrentHashMap不仅线程安全，而且还支持高并发、高吞吐。ConcurrentHashMap的底层实现使用了分段锁技术，而不是独占锁，它允许多个线程可以同时访问和修改容器，而不会抛出CoucurrentModificationException异常，极大地提高了效率。在这里要说明的是ConcurrentHashMap返回的迭代器是弱一致性的，而不是及时失败的。另外size、isEmpty等需要在整个容器上执行的方法其返回值也是弱一致性的，是近似值而非准确值。所以，在实际使用中要对此做权衡。与同步容器和加锁机制相比，ConcurrentHashMap优势明显，是我们优先考虑的容器。</p>
+<p>#CopyOnWriteArrayList</p>
+<p>CopyOnWrite容器用于替代同步的List，它提供了更好的并发性，并且在使用时不需要加锁或者拷贝容器。CopyOnWriteArrayList的主要应用就是迭代容器操作多而修改少的场景，迭代时也不会抛出CoucurrentModificationException异常。CopyOnWrite容器的底层实现是在迭代操作前都会复制一个底层数组，这保证了多线程下的并发性和一致性，但是当底层数组的数据量比较大的时候，就需要效率问题了。</p>
+<p>#阻塞队列和生产者—消费者模型</p>
+<p>Java 5.0之后新增加了Queue（队列）和BlockingQueue（阻塞队列）。Queue的底层实现其实就是一个LinkedList。队列是典型的FIFO先进先出的实现。阻塞队列提供了很多现成的方法可以满足我们实现生产者—消费者模型。</p>
+<p>生产者—消费者模型简单理解就是一个缓冲容器，协调生产者和消费者之间的关系。生产者生产数据扔到容器里，消费者直接从容器里消费数据，大家不需要关心彼此，只需要和容器打交道，这样就实现了生产者和消费者的解耦。</p>
+<p>队列分为有界队列和无界队列，无界队列会因为数据的累计造成内存溢出，使用时要小心。阻塞队列有很多种实现，最常用的有ArrayBlockingQueue和LinkedBlockingQueue。阻塞队列提供了阻塞的take和put方法，如果队列已满，那么put方法将等待队列有空间时在执行插入操作；如果队列为空，那么take方法将一直阻塞直到有元素可取。有界队列是一个强大的资源管理器，它能抑制产生过多的工作项，使程序更加健壮。</p>
+<p>#其他并发容器类</p>
+<p>除了以上较常用的并发容器外，Java还为我们提供了一些个性化的容器类以满足我们的需求。BlockingDeque，PriorityBlockingQueue，DelayQueue和SynchronousQueue。</p>
+<p>Deque是一种双端队列，它支持在两端进行插入和删除元素，Deque继承自Queue。BlockingDeque就是支持阻塞的双端队列，常用的实现有LinkedBlockingDeque。双端队列最典型的应用是工作密取，每个消费者都有各自的双端队列，它适用于既是生产者又是消费者的场景。</p>
+<p>PriorityBlockingQueue是一个可以按照优先级排序的阻塞队列，当你希望按照某种顺序来排序时非常有用。</p>
+<p>DelayQueue是一个无界阻塞队列，只有在延迟期满时才能从中提取元素。</p>
+<p>SynchronousQueue实际上不能算作一个队列，他不提供元素的存储功能，它只是维护一组线程，这些线程只是 等待将元素加入或者移除队列。SynchronousQueue相当于扮演一个直接交付的角色，因此它的put和get方法是一直阻塞的，有更少的延迟。</p>
+<p><strong><span style="font-size:20px">第三部分：并发工具类</span></strong></p>
+<p>如果遇到以上并发容器类无法解决的问题，大多数情况下我们可以使用并发工具类来解决问题。所有的同步工具类都包含共同的属性：“他们封装了一些状态，这些状态将决定执行并发工具类的线程是继续执行还是等待，此外还提供了一些方法对状态进行操作，以及另外一些用于高效的等待并发工具类进入到预期状态。”并发工具类主要包括以下几类：</p>
+<p>#CountDownLatch</p>
+<p>中文翻译为“闭锁”，Java API上是这样描述的：一个同步辅助类，在完成一组正在其他线程中执行的操作之前，它允许一个或多个线程一直等待。我们可以这样理解：CountDownLatch就相当于一扇门，当N个人都到齐之后才可以打开这扇门。门上面有一个计数器，用于记录打开门还需要的人数，比如需要五人，初始化计数器就显示五人，来了两人以后，计数器就变成了三，当五个人都到齐之后计数器变为零，此时门就打开了，所有人都可以进入了。看以下示例，创建一定数量的线程，用它们并发的执行某个指定任务。</p>
+<pre><code>public class CountDownLatchTask {
+    public long timeTask(int nThreads,final Runnable task) 
+            throws InterruptedException{
+        final CountDownLatch startTask = new CountDownLatch(1);
+        final CountDownLatch endTask = new CountDownLatch(nThreads);
+
+        for(int i=0;i&lt;nThreads;i++){
+            Thread t = new Thread(){
+                public void run(){
+                    try{
+                        startTask.await();
+                        try{
+                            task.run();
+                        }finally{
+                            endTask.countDown();
+                        }
+                    }catch(InterruptedException e){
+
+                    }
+                }
+            };
+            t.start();
+        }
+
+        long start = System.currentTimeMillis();
+        startTask.countDown();
+        endTask.await();
+        long end = System.currentTimeMillis();
+        return end-start;
+    }
+}
+</code></pre><p>#FutureTask</p>
+<p>FutureTask表示一个可以取消的异步计算。FutureTask表示的计算是通过Callable实现的，Callable与Runnable的区别就是Callable可以返回值或者抛出异常。所以我们可以用它来表示一些时间较长的计算，这些计算可以在使用计算结果之前启动，从而减少等待的时间。</p>
+<p>#Semaphore</p>
+<p>信号量用来控制同时访问某个资源的数量，或者同时执行某个操作的数量。所以信号量的典型应用就是用来实现某种资源池，或者对容器施加边界。看下面代码实例，为一个Set设置边界：</p>
+<pre><code>public class SemaphoreSet&lt;T&gt; {
+    private final Set&lt;T&gt; set;
+    private final Semaphore sem;
+
+    public SemaphoreSet(int bounds){
+        set = Collections.synchronizedSet(new HashSet&lt;T&gt;());
+        sem = new Semaphore(bounds);
+    }
+
+    public boolean add(T o) throws InterruptedException{
+        sem.acquire();
+        boolean isSuccess = false;
+        try{
+            isSuccess = set.add(o);
+            return isSuccess;
+        }finally{
+            if(!isSuccess)
+                sem.release();
+        }
+    }
+
+    public boolean remove(T o) throws InterruptedException{
+        sem.acquire();
+        boolean isSuccess = false;
+        try{
+            isSuccess = set.remove(o);
+            return isSuccess;
+        }finally{
+            if(!isSuccess)
+                sem.release();
+        }
+    }
+}
+</code></pre><p>#CyclicBarrier</p>
+<p>栅栏类似于闭锁。它们的区别是：闭锁是一次性对象，一旦达到终止状态就不能被重置，而栅栏类似于水坝，当达到某个水位线以后开闸放水，放水完毕后又可以被重置。闭锁与栅栏的另一个区别体现在：所有线程必须都达到栅栏位置，才能继续执行。闭锁等待事件，而栅栏等待线程。</p>
+<p>综上所述，通过对同步容器、并发容器和并发工具的介绍，大家大致了解了每种容器的使用场景以及各自的局限。并发容器和并发工具的出现极大地提高了程序的吞吐量和并发性，是大型网站开发过程中的必不可少的工具。</p>
+
+      
+    </div>
+
+    <div class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/并发编程/"> #并发编程 </a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/07/10/java-concurrency-program-2/">java并发编程——线程池及Executor接口介绍</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/07/01/hello-world/">写在前面</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </div>
+  </div>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+
+    
+      <div class="comments" id="comments">
+        
+          <div class="ds-thread" data-thread-key="2015/07/08/java-concurrency-program-1/"
+               data-title="java并发编程——并发容器和并发工具介绍" data-url="http://powerisam.github.io/2015/07/08/java-concurrency-program-1/">
+          </div>
+        
+      </div>
+    
+  </div>
+
+
+        </div>
+
+        
+      </div>
+
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview">
+        <div class="site-author motion-element">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="powerisam" />
+          <p class="site-author-name">powerisam</p>
+        </div>
+        <p class="site-description motion-element"></p>
+        <div class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分类</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </div>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element">
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+        
+      </div>
+
+      
+        <div class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </div>
+      
+
+    </div>
+  </div>
+
+
+    </div>
+
+    <div id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; &nbsp;  2012 - 
+  2016
+  <span class="with-love">
+    <i class="icon-heart"></i>
+  </span>
+  <span class="author">powerisam</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </div>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.3"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.3"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.3" id="motion.global"></script>
+
+
+
+  <script type="text/javascript" src="/js/search-toggle.js"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.3" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var $sidebarInner = $('.sidebar-inner');
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.didShow', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+          var self = this;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      $(indicator).velocity('stop').velocity({
+        opacity: action === 'show' ? 0.4 : 0
+      }, { duration: 100 });
+    }
+
+  });
+</script>
+
+
+  <script type="text/javascript" id="sidebar.nav">
+    $(document).ready(function () {
+      var html = $('html');
+
+      $('.sidebar-nav li').on('click', function () {
+        var item = $(this);
+        var activeTabClassName = 'sidebar-nav-active';
+        var activePanelClassName = 'sidebar-panel-active';
+        if (item.hasClass(activeTabClassName)) {
+          return;
+        }
+
+        var currentTarget = $('.' + activePanelClassName);
+        var target = $('.' + item.data('target'));
+
+        currentTarget.velocity('transition.slideUpOut', 200, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', 200)
+            .addClass(activePanelClassName);
+        });
+
+        item.siblings().removeClass(activeTabClassName);
+        item.addClass(activeTabClassName);
+      });
+
+      $('.post-toc a').on('click', function (e) {
+        e.preventDefault();
+        var offset = $(escapeSelector(this.getAttribute('href'))).offset().top;
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        });
+      });
+
+      // Expand sidebar on post detail page by default, when post has a toc.
+      var $tocContent = $('.post-toc-content');
+      if (isDesktop() && CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    });
+  </script>
+
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"isam"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+  
+  
+
+</body>
+</html>
